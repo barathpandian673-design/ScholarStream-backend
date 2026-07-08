@@ -147,12 +147,12 @@ public class PaperController {
         paper.setVersion(version);
         paper.setFileUrl(storedFileName);
         paper.setAuthor(author);
-        paper.setStatus(Paper.PaperStatus.PENDING);
+        paper.setStatus(Paper.PaperStatus.APPROVED);
         paper.setUploadDate(LocalDateTime.now());
 
         paperService.savePaper(paper);
 
-        return ResponseEntity.ok("Paper uploaded successfully. Status: PENDING");
+        return ResponseEntity.ok("Paper uploaded successfully. Status: APPROVED");
     }
 
     @PostMapping
@@ -174,7 +174,7 @@ public class PaperController {
         paper.setPublicationYear(paperDTO.getPublicationYear());
         paper.setVersion(paperDTO.getVersion() != null ? paperDTO.getVersion() : "1.0");
         paper.setAuthor(author);
-        paper.setStatus(Paper.PaperStatus.PENDING);
+        paper.setStatus(Paper.PaperStatus.APPROVED);
         paper.setUploadDate(LocalDateTime.now());
 
         Paper saved = paperService.savePaper(paper);
