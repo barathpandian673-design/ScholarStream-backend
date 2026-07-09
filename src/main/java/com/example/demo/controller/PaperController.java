@@ -121,13 +121,13 @@ public class PaperController {
     @PostMapping("/upload")
     @PreAuthorize("hasRole('AUTHOR') or hasRole('ADMIN')")
     public ResponseEntity<String> uploadPaper(@RequestParam("file") MultipartFile file,
-                                               @RequestParam("title") String title,
-                                               @RequestParam("abstractText") String abstractText,
-                                               @RequestParam("categoryId") Long categoryId,
-                                               @RequestParam(value = "journal", required = false) String journal,
-                                               @RequestParam(value = "keywords", required = false) String keywords,
-                                               @RequestParam(value = "publicationYear", required = false) Integer publicationYear,
-                                               @RequestParam(value = "version", required = false, defaultValue = "1.0") String version) {
+            @RequestParam("title") String title,
+            @RequestParam("abstractText") String abstractText,
+            @RequestParam("categoryId") Long categoryId,
+            @RequestParam(value = "journal", required = false) String journal,
+            @RequestParam(value = "keywords", required = false) String keywords,
+            @RequestParam(value = "publicationYear", required = false) Integer publicationYear,
+            @RequestParam(value = "version", required = false, defaultValue = "1.0") String version) {
         String username = currentUsername();
         User author = userService.findByUsername(username)
                 .orElseThrow(() -> new PaperNotFoundException("Author not found: " + username));
@@ -147,12 +147,12 @@ public class PaperController {
         paper.setVersion(version);
         paper.setFileUrl(storedFileName);
         paper.setAuthor(author);
-        paper.setStatus(Paper.PaperStatus.APPROVED);
+        paper.setStatus(Paper.PaperStatus.PENDING);
         paper.setUploadDate(LocalDateTime.now());
 
         paperService.savePaper(paper);
 
-        return ResponseEntity.ok("Paper uploaded successfully. Status: APPROVED");
+        return ResponseEntity.ok("Paper uploaded successfully. Status: PENDING");
     }
 
     @PostMapping
@@ -163,7 +163,8 @@ public class PaperController {
                 .orElseThrow(() -> new PaperNotFoundException("Author not found: " + username));
 
         Category category = categoryService.getCategoryById(paperDTO.getCategoryId())
-                .orElseThrow(() -> new PaperNotFoundException("Category not found with id: " + paperDTO.getCategoryId()));
+                .orElseThrow(
+                        () -> new PaperNotFoundException("Category not found with id: " + paperDTO.getCategoryId()));
 
         Paper paper = new Paper();
         paper.setTitle(paperDTO.getTitle());
@@ -174,7 +175,7 @@ public class PaperController {
         paper.setPublicationYear(paperDTO.getPublicationYear());
         paper.setVersion(paperDTO.getVersion() != null ? paperDTO.getVersion() : "1.0");
         paper.setAuthor(author);
-        paper.setStatus(Paper.PaperStatus.APPROVED);
+        paper.setStatus(Paper.PaperStatus.PENDING);
         paper.setUploadDate(LocalDateTime.now());
 
         Paper saved = paperService.savePaper(paper);
